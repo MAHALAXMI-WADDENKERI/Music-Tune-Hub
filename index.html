@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music App</title>
     <style>
@@ -13,48 +12,103 @@
             background-color: #121212;
             color: white;
         }
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+            background: #1e1e1e;
+        }
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background: #98B4D4;
+        }
         .container {
             max-width: 600px;
             margin: auto;
             padding: 20px;
         }
         .player {
-            background: url('player-background.jpg') no-repeat center/cover;
             padding: 20px;
-            border-radius: 50%;
+            border-radius: 10px;
             margin-top: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 200px;
-            height: 200px;
+            width: 300px;
             margin-left: auto;
             margin-right: auto;
-            position: relative;
+            background-color: #1e1e1e;
+            text-align: center;
+        }
+        .player img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
         }
         .player h2 {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 18px;
         }
         .playlist {
             margin-top: 20px;
         }
         .song {
             padding: 10px;
-            background: url('song-background.jpg') no-repeat center/cover;
             margin: 5px;
             border-radius: 5px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            background: #98B4D4;
+            justify-content: space-between;
+            position: relative;
+        }
+        .song img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
         }
         .song a {
             color: white;
             text-decoration: none;
-            display: block;
             background: rgba(0, 0, 0, 0.5);
             padding: 10px;
             border-radius: 5px;
+            flex-grow: 1;
+            text-align: left;
+        }
+        .menu {
+            cursor: pointer;
+            font-size: 20px;
+            padding: 10px;
+            color: white;
+            position: relative;
+        }
+        .options {
+            display: none;
+            position: absolute;
+            background: white;
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            right: 0;
+            top: 30px;
+            z-index: 1000;
+        }
+        .options div {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .options div:hover {
+            background: lightgray;
         }
         @media screen and (max-width: 600px) {
             .container {
@@ -64,10 +118,15 @@
     </style>
 </head>
 <body>
+    <div class="top-bar">
+        <a href="signup.html">Sign Up</a>
+        <a href="signin.html">Sign In</a>
+    </div>
     <div class="container">
         <h1>My Music App</h1>
-        <div class="player">
-            <h2 id="nowPlaying">Now Playing: <span id="currentSong">Loading...</span></h2>
+        <div class="player" id="player">
+            <img id="songImage" src="images/default.jpg" alt="Now Playing">
+            <h2 id="nowPlaying">Now Playing: <span id="currentSong">None</span></h2>
             <audio id="audioPlayer" controls>
                 <source id="audioSource" src="" type="audio/mpeg">
                 Your browser does not support the audio element.
@@ -75,33 +134,83 @@
         </div>
         <div class="playlist">
             <h2>Playlist</h2>
-            <div class="song"><a href="#" onclick="playSong('song1.mp3', 'Maan Meri Jaan')">Maan Meri Jaan</a></div>
-            <div class="song"><a href="#" onclick="playSong('song2.mp3', 'Lover')">Lover</a></div>
-            <div class="song"><a href="#" onclick="playSong('song3.mp3', 'Heeriye')">Heeriye</a></div>
+            <div class="song">
+                <img src="images/image1.jpg" alt="Maan Meri Jaan">
+                <a href="#" onclick="playSong('songs/song1.mp3', 'Maan Meri Jaan', 'images/image1.jpg')">Maan Meri Jaan</a>
+                <span class="menu" onclick="toggleOptions(event, 'options1')">&#8942;</span>
+                <div class="options" id="options1">
+                    <div onclick="showLyrics('Maan Meri Jaan')">Lyrics</div>
+                    <div onclick="downloadSong('songs/song1.mp3')">Download</div>
+                    <div onclick="addToPlaylist('Maan Meri Jaan')">Add to Playlist</div>
+                </div>
+            </div>
+            <div class="song">
+                <img src="images/image2.jpg" alt="Lover">
+                <a href="#" onclick="playSong('songs/song2.mp3', 'Lover', 'images/image2.jpg')">Lover</a>
+                <span class="menu" onclick="toggleOptions(event, 'options2')">&#8942;</span>
+                <div class="options" id="options2">
+                    <div onclick="showLyrics('Lover')">Lyrics</div>
+                    <div onclick="downloadSong('songs/song2.mp3')">Download</div>
+                    <div onclick="addToPlaylist('Lover')">Add to Playlist</div>
+                </div>
+            </div>
+            <div class="song">
+                <img src="images/image3.jpg" alt="Lover">
+                <a href="#" onclick="playSong('songs/song3.mp3', 'Heeriye', 'images/image3.jpg')">Heeriye</a>
+                <span class="menu" onclick="toggleOptions(event, 'options3')">&#8942;</span>
+                <div class="options" id="options3">
+                    <div onclick="showLyrics('Heeriye')">Lyrics</div>
+                    <div onclick="downloadSong('songs/song3.mp3')">Download</div>
+                    <div onclick="addToPlaylist('Heeriye')">Add to Playlist</div>
+                </div>
+            </div>
         </div>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let lastPlayed = localStorage.getItem("lastPlayedSong");
-            let lastPlayedName = localStorage.getItem("lastPlayedSongName");
-            if (lastPlayed && lastPlayedName) {
-                document.getElementById("audioSource").src = lastPlayed;
-                document.getElementById("audioPlayer").load();
-                document.getElementById("currentSong").textContent = lastPlayedName;
-            } else {
-                document.getElementById("currentSong").textContent = "None";
-            }
+        function playSong(songSrc, songTitle, songImage) {
+            let audioPlayer = document.getElementById('audioPlayer');
+            let audioSource = document.getElementById('audioSource');
+            let nowPlaying = document.getElementById('currentSong');
+            let songImageElement = document.getElementById('songImage');
+    
+            // Update the source of the audio player
+            audioSource.src = songSrc;
+            audioPlayer.load(); // Reload the audio element
+            audioPlayer.play(); // Play the song
+    
+            // Update UI with the song details
+            nowPlaying.innerText = songTitle;
+            songImageElement.src = songImage;
+        }
+    
+        function toggleOptions(event, id) {
+            event.stopPropagation();
+            document.querySelectorAll('.options').forEach(option => {
+                if (option.id !== id) option.style.display = 'none';
+            });
+            let options = document.getElementById(id);
+            options.style.display = options.style.display === 'block' ? 'none' : 'block';
+        }
+    
+        document.body.addEventListener('click', function () {
+            document.querySelectorAll('.options').forEach(option => option.style.display = 'none');
         });
-
-        function playSong(song, songName) {
-            let player = document.getElementById('audioPlayer');
-            let currentSong = document.getElementById('currentSong');
-            document.getElementById("audioSource").src = song;
-            player.load();
-            player.play();
-            currentSong.textContent = songName;
-            localStorage.setItem("lastPlayedSong", song);
-            localStorage.setItem("lastPlayedSongName", songName);
+    
+        function showLyrics(song) {
+            alert('Displaying lyrics for ' + song);
+        }
+    
+        function downloadSong(song) {
+            let a = document.createElement('a');
+            a.href = song;
+            a.download = song.split('/').pop();
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    
+        function addToPlaylist(song) {
+            alert(song + ' added to playlist!');
         }
     </script>
 </body>
